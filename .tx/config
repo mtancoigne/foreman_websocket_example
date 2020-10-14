@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[foreman.foreman_websocket_example]
+file_filter = locale/<lang>/foreman_websocket_example.edit.po
+source_file = locale/foreman_websocket_example.pot
+source_lang = en
+type = PO
