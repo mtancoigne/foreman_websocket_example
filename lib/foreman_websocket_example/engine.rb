@@ -1,3 +1,5 @@
+require 'action_cable/engine'
+
 module ForemanWebsocketExample
   class Engine < ::Rails::Engine
     engine_name 'foreman_websocket_example'
@@ -6,6 +8,22 @@ module ForemanWebsocketExample
     config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/overrides"]
+
+    # Override ActionCable initializer
+    initializer 'action_cable.set_configs' do |app|
+      engine_root = config.root
+
+      ActiveSupport.on_load(:action_cable) do
+        self.cable = app.config_for(Pathname.new("#{engine_root}/config/cable.yml"))
+      end
+
+      app.config.action_cable.disable_request_forgery_protection = true
+    end
+
+    # Extend Host model with our concern
+    config.to_prepare do
+      ApplicationRecord.include ForemanWebsocketExample::ApplicationRecordExtensions
+    end
 
     # Add any db migrations
     initializer 'foreman_websocket_example.load_app_instance_data' do |app|
@@ -42,6 +60,9 @@ module ForemanWebsocketExample
     config.to_prepare do
       Host::Managed.include ForemanWebsocketExample::HostExtensions
       HostsHelper.include ForemanWebsocketExample::HostsHelperExtensions
+
+      # Extend the base ApplicationRecord class with our concern
+      ApplicationRecord.include ForemanWebsocketExample::ApplicationRecordExtensions
     rescue StandardError => e
       Rails.logger.warn "ForemanWebsocketExample: skipping engine hook (#{e})"
     end
