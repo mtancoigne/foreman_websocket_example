@@ -1,19 +1,40 @@
 # ForemanWebsocketExample
 
-*Introdction here*
+**Example plugin** for Foreman that uses websocket to publish actions (create/update/destroy) on _all_ models.
 
 ## Installation
 
-See [How_to_Install_a_Plugin](http://projects.theforeman.org/projects/foreman/wiki/How_to_Install_a_Plugin)
-for how to install Foreman plugins
+Clone/download the plugin and update Foreman's Gemfile with:
+
+```rb
+gem 'foreman_websocket_example', path: '../path_to_plugin'
+```
+
+The plugin uses Redis, even in development (see `config/cable.yml`), so you will need a Redis server for this:
+
+```shell
+# For Debian/Ubuntu
+sudo apt install redis
+```
+
+Edit the Foreman URL in `example_client/index.html`
 
 ## Usage
 
-*Usage here*
+- Once installed, start Foreman.
+- Open the client in your browser (`example_client/index.html`), open the developper tools and check the JS console
+- Create/update/destroy things (a safe example is to create an organization or location) in Foreman
+- Look at the console.
 
-## TODO
+## Known issues
 
-*Todo list here*
+Don't install the plugin if you have not ran the Foreman's migration, or the migrations will fail.
+
+## How it works
+
+- Plugin loads ActionCable and configures it (check `lib/foreman_websocket_example/engine.rb`, `config/cable.yml`)
+- Plugins adds a concern to `ApplicationRecord` class, with hooks (see `app/models/concerns/application_record_extension.rb`)
+- On `after_create`, `after_update` and `after_destroy`, data is broadcasted to `GlobalChanges` channel (see `app/channels/foreman_websocket_example/global_changes_channel`) 
 
 ## Contributing
 
@@ -21,7 +42,7 @@ Fork and send a Pull Request. Thanks!
 
 ## Copyright
 
-Copyright (c) *year* *your name*
+Copyright (c) 2020 Opus Codium
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
