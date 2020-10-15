@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example websocket client</title>
+</head>
+
+<body>
+
+  <h1>Open your devtools, look at the console!</h1>
+
+  <!-- This script comes from Rails' @rails/actioncable library
+    In a project with package manager you would have added 
+    @rails/actioncable to packages.json. And for the other -->
+  <script src="./action_cable.js"></script>
+
+  <!-- Subscriptions and logging. See ActionCable documentation -->
+  <script>
+    const consumer = ActionCable.createConsumer('http://192.168.121.50:3000/cable')
+    // ------------------------- Change this --- ^
+
+    consumer.subscriptions.create({ channel: 'ForemanWebsocketExample::GlobalChangesChannel' }, {
+      received(data) {
+        console.log(data)
+      }
+    })
+  </script>
+</body>
+
+</html>
