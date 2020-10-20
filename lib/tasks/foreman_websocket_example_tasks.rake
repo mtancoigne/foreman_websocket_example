@@ -23,7 +23,7 @@ namespace :test do
 end
 
 namespace :foreman_websocket_example do
-  task :rubocop do
+  task rubocop: :environment do
     begin
       require 'rubocop/rake_task'
       RuboCop::RakeTask.new(:rubocop_foreman_websocket_example) do |task|
@@ -31,7 +31,7 @@ namespace :foreman_websocket_example do
                          "#{ForemanWebsocketExample::Engine.root}/lib/**/*.rb",
                          "#{ForemanWebsocketExample::Engine.root}/test/**/*.rb"]
       end
-    rescue
+    rescue StandardError
       puts 'Rubocop not loaded.'
     end
 

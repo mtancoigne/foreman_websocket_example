@@ -28,10 +28,10 @@ module ForemanWebsocketExample
 
         # add menu entry
         menu :top_menu, :template,
-             url_hash: { controller: :'foreman_websocket_example/hosts', action: :new_action },
-             caption: 'ForemanWebsocketExample',
-             parent: :hosts_menu,
-             after: :hosts
+          url_hash: { controller: :'foreman_websocket_example/hosts', action: :new_action },
+          caption: 'ForemanWebsocketExample',
+          parent: :hosts_menu,
+          after: :hosts
 
         # add dashboard widget
         widget 'foreman_websocket_example_widget', name: N_('Foreman plugin template widget'), sizex: 4, sizey: 1
@@ -40,12 +40,10 @@ module ForemanWebsocketExample
 
     # Include concerns in this config.to_prepare block
     config.to_prepare do
-      begin
-        Host::Managed.send(:include, ForemanWebsocketExample::HostExtensions)
-        HostsHelper.send(:include, ForemanWebsocketExample::HostsHelperExtensions)
-      rescue => e
-        Rails.logger.warn "ForemanWebsocketExample: skipping engine hook (#{e})"
-      end
+      Host::Managed.include ForemanWebsocketExample::HostExtensions
+      HostsHelper.include ForemanWebsocketExample::HostsHelperExtensions
+    rescue StandardError => e
+      Rails.logger.warn "ForemanWebsocketExample: skipping engine hook (#{e})"
     end
 
     rake_tasks do
@@ -55,7 +53,7 @@ module ForemanWebsocketExample
     end
 
     initializer 'foreman_websocket_example.register_gettext', after: :load_config_initializers do |_app|
-      locale_dir = File.join(File.expand_path('../../..', __FILE__), 'locale')
+      locale_dir = File.join(File.expand_path('../..', __dir__), 'locale')
       locale_domain = 'foreman_websocket_example'
       Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
     end

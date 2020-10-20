@@ -1,6 +1,8 @@
 require File.expand_path('lib/foreman_websocket_example/version', __dir__)
 
 Gem::Specification.new do |s|
+  s.required_ruby_version = '>= 2.5.0'
+
   s.name        = 'foreman_websocket_example'
   s.version     = ForemanWebsocketExample::VERSION
   s.license     = 'GPL-3.0'
