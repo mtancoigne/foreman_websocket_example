@@ -30,6 +30,8 @@ Edit the Foreman URL in `example_client/index.html`
 
 Don't install the plugin if you have not ran the Foreman's migration, or the migrations will fail.
 
+It won’t work in production with Apache + Passenger, but works with Puma (and should work with NginX + Passenger, if it’s supported by Foreman).
+
 ## How it works
 
 - Plugin loads ActionCable and configures it (check `lib/foreman_websocket_example/engine.rb`, `config/cable.yml`)
